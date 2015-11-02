@@ -7,15 +7,44 @@ import android.view.View;
 import android.widget.TextView;
 
 public class StopwatchActivity extends Activity {
-
+    //Number of seconds displayed on the stopwatch.
     private int seconds = 0;
+    //Is the stopwatch running?
     private boolean running;
+    private boolean wasRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stopwatch);
+        if (savedInstanceState != null){
+            seconds = savedInstanceState.getInt("seconds");
+            running = savedInstanceState.getBoolean("running");
+            wasRunning = savedInstanceState.getBoolean("wasRunning");
+        }
         runTimer();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        wasRunning = running;
+        running = false;
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (wasRunning) {
+            running = true;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putInt("seconds", seconds);
+        savedInstanceState.putBoolean("running", running);
+        savedInstanceState.putBoolean("wasRunning", wasRunning);
     }
 
     //Start the stopwatch running when the Start button is clicked.
